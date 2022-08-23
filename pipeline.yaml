@@ -1,0 +1,33 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: tutorial-pipeline
+spec:
+  workspaces:
+    - name: myworkspace
+  tasks:
+    - name: fetch-repository
+      taskRef:
+        name: git-clone
+      workspaces:
+        - name: output
+          workspace: myworkspace
+      params:
+        - name: url
+          value: https://github.com/chan43999/go-tekton-sample
+        - name: deleteExisting
+          value: "true"
+    - name: build
+      taskRef:
+        name: buildah
+      runAfter:
+        - fetch-repository
+      params:
+        - name: IMAGE
+          value: quay.io/mayurwaghmode111/tekton-buidah
+        - name: IMAGE_PUSH_SECRET_NAME
+          value: quay-secret
+      workspaces:
+        - name: source
+          workspace: myworkspace
+

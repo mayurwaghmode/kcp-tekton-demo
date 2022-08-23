@@ -1,0 +1,18 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  generateName: tutorial-pipeline-
+spec:
+  serviceAccountName: pipeline
+  pipelineRef:
+    name: tutorial-pipeline
+  workspaces:
+    - name: myworkspace
+      volumeClaimTemplate:
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 50Mi
+          storageClassName: managed-nfs-storage
